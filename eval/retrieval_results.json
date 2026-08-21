@@ -5,12 +5,14 @@
     {
       "mode": "graph+keyword",
       "doc_recall": 0.941,
-      "node_recall": 0.964
+      "node_recall_oracle_direction": 0.964,
+      "node_recall_auto_direction": 0.75
     },
     {
       "mode": "keyword-only",
       "doc_recall": 1.0,
-      "node_recall": null
+      "node_recall_oracle_direction": null,
+      "node_recall_auto_direction": null
     }
   ]
 }

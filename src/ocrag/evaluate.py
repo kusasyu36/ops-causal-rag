@@ -25,19 +25,25 @@ def eval_retrieval(corpus_dir: Path, eval_path: Path, k: int = 4) -> dict:
         doc_total = 0
         node_hit = 0
         node_total = 0
+        node_hit_auto = 0
         for c in cases:
             hits = retrieve(c["q"], corpus_dir, k=k, use_graph=mode)
             got = {h.doc_id for h in hits}
             doc_hit += len(set(c["gold_docs"]) & got)
             doc_total += len(c["gold_docs"])
             if mode:
+                # oracle: 評価セットの正解方向を与えた場合（グラフ探索単体の性能）
                 nodes, _ = expand_nodes(c["q"], c.get("direction", "auto"))
                 node_hit += len(set(c["gold_nodes"]) & set(nodes))
+                # auto: 実運用どおり方向を自動判定した場合（フルパイプラインの性能）
+                nodes_auto, _ = expand_nodes(c["q"], "auto")
+                node_hit_auto += len(set(c["gold_nodes"]) & set(nodes_auto))
                 node_total += len(c["gold_nodes"])
         rows.append({
             "mode": "graph+keyword" if mode else "keyword-only",
             "doc_recall": round(doc_hit / doc_total, 3),
-            "node_recall": round(node_hit / node_total, 3) if mode else None,
+            "node_recall_oracle_direction": round(node_hit / node_total, 3) if mode else None,
+            "node_recall_auto_direction": round(node_hit_auto / node_total, 3) if mode else None,
         })
     return {"k": k, "n_cases": len(cases), "results": rows}
 

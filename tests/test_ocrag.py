@@ -109,5 +109,8 @@ class TestEvaluation:
         assert modes["graph+keyword"]["doc_recall"] >= 0.9
         assert modes["keyword-only"]["doc_recall"] >= 0.9
         # 因果ノードの再現はグラフモードだけが提供できる
-        assert modes["graph+keyword"]["node_recall"] >= 0.9
-        assert modes["keyword-only"]["node_recall"] is None
+        # oracle=正解方向を与えたグラフ探索単体 / auto=方向自動判定込みの実運用条件
+        assert modes["graph+keyword"]["node_recall_oracle_direction"] >= 0.9
+        assert modes["graph+keyword"]["node_recall_auto_direction"] >= 0.7
+        assert modes["graph+keyword"]["node_recall_auto_direction"] <= modes["graph+keyword"]["node_recall_oracle_direction"]
+        assert modes["keyword-only"]["node_recall_oracle_direction"] is None
