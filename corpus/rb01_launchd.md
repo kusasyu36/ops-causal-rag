@@ -1,0 +1,6 @@
+# RB01 launchdスケジューラ運用
+定時ジョブ（朝会レポート等）はcronでなくlaunchdで動かす。理由: cronから起動した
+プロセスはユーザーのKeychainにアクセスできず、LLM CLIの認証が必ず失敗するため。
+launchdはユーザーセッション権限で動くのでKeychainを読める。
+注意: launchdから起動される環境はPATHがほぼ空。スクリプト内でPATHを明示的に
+設定しないと、nodeやclaudeが見つからず失敗する。plist変更は再読み込みまで反映されない。

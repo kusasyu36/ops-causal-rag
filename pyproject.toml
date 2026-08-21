@@ -1,0 +1,9 @@
+[project]
+name = "ops-causal-rag"
+version = "0.1.0"
+description = "Explainable graph-guided RAG over ops runbooks with citation validation"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

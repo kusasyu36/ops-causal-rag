@@ -1,0 +1,16 @@
+{
+  "k": 4,
+  "n_cases": 12,
+  "results": [
+    {
+      "mode": "graph+keyword",
+      "doc_recall": 0.941,
+      "node_recall": 0.964
+    },
+    {
+      "mode": "keyword-only",
+      "doc_recall": 1.0,
+      "node_recall": null
+    }
+  ]
+}

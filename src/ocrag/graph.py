@@ -98,11 +98,35 @@ def root_causes_of(service: str, max_depth: int = 5) -> list[list[str]]:
     return chains
 
 
+# 質問文で使われがちな短い別名（正式ラベルの完全一致だけでは日本語の質問に届かない）
+ALIASES: dict[str, list[str]] = {
+    "asakai-report": ["朝会レポート", "朝会"],
+    "slack-bot": ["常駐ボット", "ボット"],
+    "socket-conn": ["ソケット"],
+    "llm-cli": ["LLM CLI", "claude -p", "claude"],
+    "launchd-scheduler": ["launchd", "定時ジョブ", "スケジューラ"],
+    "auth-keychain": ["Keychain", "認証"],
+    "sheet-webhook": ["スプレッドシート", "GAS", "受け口"],
+    "diagnosis-page": ["診断ページ", "Web診断"],
+    "record-pipeline": ["記録"],
+    "notifier": ["通知"],
+    "slack-api": ["Slack API"],
+    "gas-runtime": ["GAS"],
+    "vercel-hosting": ["Vercel"],
+    "network": ["ネットワーク", "ネット断"],
+    "mac-power": ["スリープ", "電源", "Mac"],
+    "user-session": ["ログインセッション", "セッション"],
+    "subscription-quota": ["利用枠", "サブスクリプション"],
+    "google-quota": ["割当"],
+}
+
+
 def nodes_in_question(text: str) -> list[str]:
-    """質問文に登場するノードを、日本語ラベル/英名の両方から拾う（出現順・重複なし）。"""
+    """質問文に登場するノードを、英名・正式ラベル・別名から拾う（出現位置順・重複なし）。"""
     found = []
     for node, label in LABELS.items():
-        if node in text or label in text:
-            found.append((min(text.find(node) % 10**6 if node in text else 10**6,
-                              text.find(label) % 10**6 if label in text else 10**6), node))
+        candidates = [node, label] + ALIASES.get(node, [])
+        positions = [text.find(c) for c in candidates if c in text]
+        if positions:
+            found.append((min(positions), node))
     return [n for _, n in sorted(found)]
